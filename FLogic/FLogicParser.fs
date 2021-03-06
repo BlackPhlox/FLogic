@@ -1,5 +1,8 @@
 ﻿module FLogic
 
+//Thus far:
+//https://fsharpforfunandprofit.com/posts/understanding-parser-combinators-4/#the-complete-string-parser
+
 open TextInput
 open ParserLibrary
 open System
