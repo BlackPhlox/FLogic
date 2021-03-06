@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "FLogic.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "--cli"
+    },
+    "FLogic.Interactive": {
+      "commandName": "Project"
+    }
+  }
+}
