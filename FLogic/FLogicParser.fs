@@ -2,6 +2,7 @@
 
 open TextInput
 open ParserLibrary
+open System
 
 let hello (name:string) =
     let msg = sprintf "Hello %s" name
@@ -83,4 +84,68 @@ let lBool =
 
     // choose between true and false
     ltrue <|> lfalse
-    <?> "bool"           // give it a label
+    <?> "bool"       // give it a label
+
+// ======================================
+// Parsing a LString
+// ======================================
+
+/// Parse an unescaped char
+let lUnescapedChar =
+    satisfy (fun ch -> ch <> '\\' && ch <> '\"') "char"
+
+/// Parse an escaped char
+let lEscapedChar =
+    [
+    // (stringToMatch, resultChar)
+    ("\\\"",'\"')      // quote
+    ("\\\\",'\\')      // reverse solidus
+    ("\\/",'/')        // solidus
+    ("\\b",'\b')       // backspace
+    ("\\f",'\f')       // formfeed
+    ("\\n",'\n')       // newline
+    ("\\r",'\r')       // cr
+    ("\\t",'\t')       // tab
+    ]
+    // convert each pair into a parser
+    |> List.map (fun (toMatch,result) ->
+        pstring toMatch >>% result)
+    // and combine them into one
+    |> choice
+    <?> "escaped char" // set label
+
+/// Parse a unicode char
+let lUnicodeChar =
+
+    // set up the "primitive" parsers
+    let backslash = pchar '\\'
+    let uChar = pchar 'u'
+    let hexdigit = 
+        anyOf (['0'..'9'] @ ['A'..'F'] @ ['a'..'f'])
+    let fourHexDigits =
+        hexdigit .>>. hexdigit .>>. hexdigit .>>. hexdigit
+
+    // convert the parser output (nested tuples)
+    // to a char
+    let convertToChar (((h1,h2),h3),h4) =
+        let str = sprintf "%c%c%c%c" h1 h2 h3 h4
+        Int32.Parse(str,Globalization.NumberStyles.HexNumber) |> char
+
+    // set up the main parser
+    backslash  >>. uChar >>. fourHexDigits
+    |>> convertToChar
+
+/// Parse a quoted string
+let quotedString =
+    let quote = pchar '\"' <?> "quote"
+    let jchar = lUnescapedChar <|> lEscapedChar <|> lUnicodeChar
+
+    // set up the main parser
+    quote >>. manyChars jchar .>> quote
+
+/// Parse a JString
+let jString =
+    // wrap the string in a JString
+    quotedString
+    |>> JString           // convert to JString
+    <?> "quoted string"   // add label
