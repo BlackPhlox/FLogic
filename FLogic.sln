@@ -12,7 +12,10 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FLogic.Tests", "FLogic.Test
 		{94516A54-1ED2-4001-BA88-3EE71AD9EBAE} = {94516A54-1ED2-4001-BA88-3EE71AD9EBAE}
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FLogic.GUI", "FLogic.GUI\FLogic.GUI.fsproj", "{FEF40D0A-5A9A-464B-9E39-E8D0DB13BC3C}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FLogic.GUI", "FLogic.GUI\FLogic.GUI.fsproj", "{FEF40D0A-5A9A-464B-9E39-E8D0DB13BC3C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{94516A54-1ED2-4001-BA88-3EE71AD9EBAE} = {94516A54-1ED2-4001-BA88-3EE71AD9EBAE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,10 +39,6 @@ Global
 		{FEF40D0A-5A9A-464B-9E39-E8D0DB13BC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEF40D0A-5A9A-464B-9E39-E8D0DB13BC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEF40D0A-5A9A-464B-9E39-E8D0DB13BC3C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A4E2042-A960-47A8-9134-078A14A7B073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A4E2042-A960-47A8-9134-078A14A7B073}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A4E2042-A960-47A8-9134-078A14A7B073}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A4E2042-A960-47A8-9134-078A14A7B073}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

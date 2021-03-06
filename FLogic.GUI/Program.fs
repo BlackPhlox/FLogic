@@ -1,6 +1,7 @@
 ﻿open System.Drawing
 open System.Windows.Forms
 open System
+open FLogic
 
 let form = new Form(Width = 400, Height = 400, Text = "draw test")
 let panel = new FlowLayoutPanel()
@@ -20,6 +21,13 @@ button.AutoSize <- true
 button.Click.Add(fun _ -> form.Paint.Add(paint); form.Invalidate()) 
 
 panel.Controls.Add(button)
+
+
+let cmd_button = new Button()
+cmd_button.Text <- "Click to call"
+cmd_button.AutoSize <- true
+cmd_button.Click.Add(fun _ -> cmd_button.Text <- Say.hello "Hi") 
+panel.Controls.Add(cmd_button)
 
 //form.Paint.Add(paint) //<- here, if uncommented, it will draw a line when the script is run
 form.Show()
