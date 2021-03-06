@@ -25,11 +25,6 @@ type Lexp =
     | JObject of Map<string, Lexp>
     | JArray  of Lexp list
 
-let test1 = IN("A", B true)
-let test2 = IN("B", U)
-let test3 = OUT("O1", IN("C", U))
-let test4 = OUT("O1", AND(IN("D", U), IN("D", U)))
-
 //IC (A new gate) or Program (A new curcuit)
 
 // ======================================
@@ -73,3 +68,19 @@ let lUndefined =
     pstring "U"
     >>% U    // map to U
     <?> "U"  // give it a label
+
+// ======================================
+// Parsing a JBool
+// ======================================
+
+let lBool =
+    let ltrue =
+        pstring "true"
+        >>% B true   // map to JBool
+    let lfalse =
+        pstring "false"
+        >>% B false  // map to JBool
+
+    // choose between true and false
+    ltrue <|> lfalse
+    <?> "bool"           // give it a label
