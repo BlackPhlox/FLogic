@@ -4,12 +4,12 @@
       "commandName": "Project",
       "commandLineArgs": "--cli"
     },
-    "FLogic.Interactive": {
-      "commandName": "Project"
-    },
     "FLogic.Help": {
       "commandName": "Project",
       "commandLineArgs": "--help"
+    },
+    "FLogic.CLI.Interactive": {
+      "commandName": "Project"
     }
   }
 }
