@@ -6,6 +6,10 @@
     },
     "FLogic.Interactive": {
       "commandName": "Project"
+    },
+    "FLogic.Help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
     }
   }
 }
