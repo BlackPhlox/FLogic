@@ -9,11 +9,14 @@ let hello (name:string) =
     msg
 
 type Lexp =
-    //Undefined
+    //Value:
+    //(U)ndefined or (B)ool
     | U 
     | B of bool
+    //IO
     | IN of string * Lexp
     | OUT of string * Lexp
+    //Base Gates
     | AND of Lexp * Lexp
     | JString of string
     | JNumber of float

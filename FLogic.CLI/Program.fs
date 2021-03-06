@@ -25,7 +25,7 @@ let rec menu (str:Option<string>) : Option<string> =
             | x when x = "exit" -> 
                 None
             | _ -> 
-                printf "Invalid command"
+                printfn "Invalid command: %A" rs
                 None
         if action.IsSome 
         then menu str
@@ -37,6 +37,30 @@ let rec any str1 str2 = function
         then true
         else any str1 str2 xs
     | _ -> false
+
+let handle_CLI e_arg lst_args =
+    if e_arg "-tt" "--truthtable" then printfn "With truthtable"
+    if e_arg "-t" "--tree" then printfn "With tree"
+
+    let gateEval = e_arg "-ge" "--gateeval"
+    let typeSimp = e_arg "-ts" "--typesimp"
+
+    if gateEval && typeSimp then
+        printfn "Invalid request, you can't both do gate evaluation and type simplification"
+    elif gateEval then 
+        printfn "Gate evaluation"
+        if not (e_arg "-in" "--input") 
+        then printfn "No input provided"
+        else printfn "Reading input"
+
+    elif typeSimp then
+        printfn "Type simplification"
+        if not (e_arg "-g" "--gates") 
+        then printfn "No gates provided, using most highest complex gates"
+        else printfn "Only using gates: [AND,NAND]"
+    else 
+        printfn "Unknown command(s) : %A, exiting" lst_args
+    
 
 [<EntryPoint>]
 let main argv =
@@ -60,27 +84,7 @@ let main argv =
     else 
         //CLI Handler
         printfn "Welcome to FLogic.CLI!"
-        if e_arg "-tt" "--truthtable" then printfn "With truthtable"
-        if e_arg "-t" "--tree" then printfn "With tree"
-
-        let gateEval = e_arg "-ge" "--gateeval"
-        let typeSimp = e_arg "-ts" "--typesimp"
-
-        if gateEval && typeSimp then
-            printfn "Invalid request, you can't both do gate evaluation and type simplification"
-        elif gateEval then 
-            printfn "Gate evaluation"
-            if not (e_arg "-in" "--input") 
-            then printfn "No input provided"
-            else printfn "Reading input"
-
-        elif typeSimp then
-            printfn "Type simplification"
-            if not (e_arg "-g" "--gates") 
-            then printfn "No gates provided, using most highest complex gates"
-            else printfn "Only using gates: [AND,NAND]"
-        else 
-            printfn "Unknown command, exiting"
+        handle_CLI e_arg lst_args
             
     printfn ""
     printfn "Press any key to exit"
