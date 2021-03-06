@@ -6,7 +6,7 @@ open FLogic
 
 type Tests(output:ITestOutputHelper) =
     let dprint a (b:string) = output.WriteLine(a,b)
-    let def_error t value = $"Line:0 Col:0 Error parsing {t}\n{value}\n^Unexpected '{value}'"
+    let def_error expectedType unexpectedPart = $"Line:0 Col:0 Error parsing {expectedType}\n{unexpectedPart}\n^Unexpected '{unexpectedPart}'"
 
     [<Fact>]
     let ``Prints string to output test console`` () =
@@ -43,5 +43,10 @@ type Tests(output:ITestOutputHelper) =
 
     [<Fact>]
     let ``unicode char unesscaped char parse Test Succeeds`` () =
+        let parsedResult = ParserLibrary.run lUnescapedChar "\u263A" |> ParserLibrary.sprintResult
+        Assert.Equal("'☺'", parsedResult)
+
+    [<Fact>]
+    let ``Gate parse test success`` () =
         let parsedResult = ParserLibrary.run lUnescapedChar "\u263A" |> ParserLibrary.sprintResult
         Assert.Equal("'☺'", parsedResult)

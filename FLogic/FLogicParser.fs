@@ -22,10 +22,9 @@ type Lexp =
     | OUT of string * Lexp
     //Base Gates
     | AND of Lexp * Lexp
-    | JString of string
-    | JNumber of float
-    | JBool   of bool
-    | JNull
+    
+    | LString of string
+    | JNumber of float  
     | JObject of Map<string, Lexp>
     | JArray  of Lexp list
 
@@ -54,7 +53,7 @@ let createParserForwardedToRef<'a>() =
 
     wrapperParser, parserRef
 
-let jValue,jValueRef = createParserForwardedToRef<Lexp>()
+let lValue, lValueRef = createParserForwardedToRef<Lexp>()
 
 // ======================================
 // Utility function
@@ -146,9 +145,139 @@ let quotedString =
     // set up the main parser
     quote >>. manyChars jchar .>> quote
 
-/// Parse a JString
-let jString =
-    // wrap the string in a JString
-    quotedString
-    |>> JString           // convert to JString
+
+/// Parse a lString
+let lString =
+    quotedString        // wrap the string in a JString
+    |>> LString           // convert to JString
     <?> "quoted string"   // add label
+
+ (*
+ 
+ Furter parsing implementations goes here
+ 
+ *)
+
+ // ======================================
+ // Parsing a JNumber
+ // ======================================
+ 
+ /// Parse a JNumber
+let jNumber = 
+    // set up the "primitive" parsers
+    let optSign = opt (pchar '-')
+ 
+    let zero = pstring "0"
+ 
+    let digitOneNine =
+        satisfy (fun ch -> Char.IsDigit ch && ch <> '0') "1-9"
+ 
+    let digit =
+        satisfy (fun ch -> Char.IsDigit ch ) "digit"
+ 
+    let point = pchar '.'
+ 
+    let e = pchar 'e' <|> pchar 'E'
+ 
+    let optPlusMinus = opt (pchar '-' <|> pchar '+')
+ 
+    let nonZeroInt =
+        digitOneNine .>>. manyChars digit
+        |>> fun (first,rest) -> string first + rest
+ 
+    let intPart = zero <|> nonZeroInt
+ 
+    let fractionPart = point >>. manyChars1 digit
+ 
+    let exponentPart = e >>. optPlusMinus .>>. manyChars1 digit
+ 
+    // utility function to convert an optional value to a string, or "" if missing
+    let ( |>? ) opt f =
+        match opt with
+        | None -> ""
+        | Some x -> f x
+ 
+    let convertToJNumber (((optSign,intPart),fractionPart),expPart) =
+    // convert to strings and let .NET parse them! - crude but ok for now.
+        let signStr =
+            optSign
+            |>? string   // e.g. "-"
+ 
+        let fractionPartStr =
+            fractionPart
+            |>? (fun digits -> "." + digits )  // e.g. ".456"
+ 
+        let expPartStr =
+            expPart
+            |>? fun (optSign, digits) ->
+                let sign = optSign |>? string
+                "e" + sign + digits          // e.g. "e-12"
+ 
+        // add the parts together and convert to a float, then wrap in a JNumber
+        (signStr + intPart + fractionPartStr + expPartStr)
+        |> float
+        |> JNumber
+ 
+    // set up the main parser
+    optSign .>>. intPart .>>. opt fractionPart .>>. opt exponentPart
+    |>> convertToJNumber
+    <?> "number"   // add label
+ 
+ // ======================================
+ // Parsing a JArray
+ // ======================================
+ 
+let jArray =
+    // set up the "primitive" parsers
+    let left = pchar '[' .>> spaces
+    let right = pchar ']' .>> spaces
+    let comma = pchar ',' .>> spaces
+    let value = lValue .>> spaces
+ 
+    // set up the list parser
+    let values = sepBy value comma
+ 
+    // set up the main parser
+    between left values right
+    |>> JArray
+    <?> "array"
+ 
+ // ======================================
+ // Parsing a JObject
+ // ======================================
+ 
+ 
+let jObject = 
+    // set up the "primitive" parsers
+    let left = spaces >>. pchar '{' .>> spaces
+    let right = pchar '}' .>> spaces
+    let colon = pchar ':' .>> spaces
+    let comma = pchar ',' .>> spaces
+    let key = quotedString .>> spaces
+    let value = lValue .>> spaces
+ 
+    // set up the list parser
+    let keyValue = (key .>> colon) .>>. value
+    let keyValues = sepBy keyValue comma
+ 
+    // set up the main parser
+    between left keyValues right
+    |>> Map.ofList  // convert the list of keyValues into a Map
+    |>> JObject     // wrap in JObject
+    <?> "object"    // add label
+
+ // ======================================
+ // Fixing up the jValue ref
+ // ======================================
+ 
+ // fixup the forward ref
+
+lValueRef := choice
+    [
+    lUndefined
+    lBool
+    jNumber
+    lString
+    jArray
+    jObject
+    ]
