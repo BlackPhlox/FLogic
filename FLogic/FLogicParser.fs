@@ -152,11 +152,7 @@ let lString =
     |>> LString           // convert to JString
     <?> "quoted string"   // add label
 
- (*
- 
- Furter parsing implementations goes here
- 
- *)
+//UNUSED Code below
 
  // ======================================
  // Parsing a JNumber
@@ -266,6 +262,12 @@ let jObject =
     |>> JObject     // wrap in JObject
     <?> "object"    // add label
 
+(*
+
+    Furter parsing implementations goes here
+
+*)
+
  // ======================================
  // Fixing up the jValue ref
  // ======================================
@@ -276,8 +278,8 @@ lValueRef := choice
     [
     lUndefined
     lBool
-    jNumber
+//    jNumber
     lString
-    jArray
-    jObject
+//    jArray
+//    jObject
     ]
