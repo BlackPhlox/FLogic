@@ -2,22 +2,31 @@
 
 open System
 
-let rec menu() : Option<string> =
-    printfn "Menu"
-    let rs = Console.ReadLine()
-    let action = 
-        match rs with
-        | x when x = "Simplify" -> 
-            printf "Simp"
-            None
-        | x when x = "exit" -> 
-            Some("Exit")
-        | _ -> 
-            printf "Invalid command"
-            Some("Error")
-    if action.IsSome 
-    then Some("Exit")
-    else menu()
+let help() =
+    printfn "Long help message"
+
+let rec menu (str:Option<string>) : Option<string> =
+    if str.IsNone 
+    then None
+    else
+        printfn "%A" str.Value
+        let rs = Console.ReadLine()
+        Console.Clear()
+        let action = 
+            match rs with
+            | x when x = "Simplify" -> 
+                menu (Some "Simplify")
+            | x when x = "help" ->
+                help()
+                menu (Some "Menu")
+            | x when x = "exit" -> 
+                None
+            | _ -> 
+                printf "Invalid command"
+                None
+        if action.IsSome 
+        then menu str
+        else None
 
 let rec any str1 str2 = function
     | x::xs -> 
@@ -37,13 +46,16 @@ let main argv =
     let e_arg str1 str2 = any str1 str2 lst_args 
 
     //No args provided or contains overwrite keyword interactive
-    if argv.Length = 0 || (any "-i" "--interactive" lst_args) then 
+    if argv.Length = 0 || (any "-i" "--interactive" lst_args) then
+        //Interactive handler
         printfn "Welcome to FLogic.Interactive!"
-        let res = menu()
-        if res.IsSome then exit(0)
+        let res = menu (Some "Menu")
+        if res.IsNone then exit(0)
     elif (e_arg "-h" "--help") then
-        printfn "Long help message"
+        //Help printout
+        help()
     else 
+        //CLI Handler
         printfn "Welcome to FLogic.CLI!"
         if e_arg "-tt" "--truthtable" then printfn "With truthtable"
         if e_arg "-t" "--tree" then printfn "With tree"
@@ -61,6 +73,9 @@ let main argv =
 
         elif typeSimp then
             printfn "Type simplification"
+            if not (e_arg "-g" "--gates") 
+            then printfn "No gates provided, using most highest complex gates"
+            else printfn "Only using gates: [AND,NAND]"
         else 
             printfn "Unknown command, exiting"
             
