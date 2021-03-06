@@ -2,17 +2,17 @@ module Tests
 
 open System
 open Xunit
-open FLogic
 open System.IO
+open FLogic
 
 [<Fact>]
-let ``My test`` () =
-    Assert.Equal("Hello Test", Say.hello "Test")
+let ``Hello world test`` () =
+    Assert.Equal("Hello Test", hello "Test")
 
 [<Fact>]
-let ``My binary write test`` () =
+let ``Binary write test`` () =
     let v = 42
-    let name = "mybinarytestdata"
+    let name = "binarytestdata"
     let bw = new BinaryWriter(new FileStream(name, FileMode.Create))
     bw.Write(v);
     bw.Close();
@@ -24,11 +24,16 @@ let ``My binary write test`` () =
     Assert.Equal(v,i)
 
 [<Fact>]
-let ``My binary string write test`` () =
-    let name = "mystringtestdata"
+let ``Binary string write test`` () =
+    let name = "stringtestdata"
     let content = "hello\nworld"
     File.WriteAllText(name,content)
     let msg = File.ReadAllText(name)
     printfn "%A" msg
     File.Delete(name)
     Assert.Equal(content,msg)
+
+[<Fact>]
+let ``Binary string write read parse test`` () =
+    let a = ParserLibrary.run lUndefined "U" |> ParserLibrary.sprintResult
+    Assert.Equal(a, "U")
