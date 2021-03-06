@@ -5,7 +5,7 @@ open System
 let help() =
     printfn "Long help message"
 
-//Stack overflow if to many menu stack-frames is added to the stack
+//Warning: Stack overflow if to many menu stack-frames is added to the stack
 //Needs to be tail recursive using either 
 //tail recursion or continuation
 let rec menu (str:Option<string>) : Option<string> =
@@ -75,7 +75,7 @@ let main argv =
     //No args provided or contains overwrite keyword interactive
     if argv.Length = 0 || (any "-i" "--interactive" lst_args) then
         //Interactive handler
-        printfn "Welcome to FLogic.Interactive!"
+        printfn "Welcome to FLogic.Interactive!\nWrite 'help' to get more information."
         let res = menu (Some "Menu")
         if res.IsNone then exit(0)
     elif (e_arg "-h" "--help") then
