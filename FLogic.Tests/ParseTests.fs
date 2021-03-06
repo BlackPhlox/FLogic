@@ -47,6 +47,14 @@ type Tests(output:ITestOutputHelper) =
         Assert.Equal("'☺'", parsedResult)
 
     [<Fact>]
-    let ``Gate parse test success`` () =
-        let parsedResult = ParserLibrary.run lUnescapedChar "\u263A" |> ParserLibrary.sprintResult
-        Assert.Equal("'☺'", parsedResult)
+    let ``Json parse test success`` () =
+        let example1 = """{
+        "name" : "Scott",
+        "isMale" : true,
+        "bday" : {"year":2001, "month":12, "day":25 },
+        "favouriteColors" : ["blue", "green"],
+        "emptyArray" : [],
+        "emptyObject" : {}
+        }"""
+        let res = ParserLibrary.run lValue example1 |> ParserLibrary.sprintResult
+        dprint "{0}" res

@@ -278,8 +278,8 @@ lValueRef := choice
     [
     lUndefined
     lBool
-//    jNumber
+    jNumber
     lString
-//    jArray
-//    jObject
+    jArray
+    jObject
     ]
