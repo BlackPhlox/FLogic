@@ -1,13 +1,7 @@
-module Tests
+﻿module IOTests
 
-open System
 open Xunit
 open System.IO
-open FLogic
-
-[<Fact>]
-let ``Hello world test`` () =
-    Assert.Equal("Hello Test", hello "Test")
 
 [<Fact>]
 let ``Binary write test`` () =
@@ -32,8 +26,3 @@ let ``Binary string write test`` () =
     printfn "%A" msg
     File.Delete(name)
     Assert.Equal(content,msg)
-
-[<Fact>]
-let ``Binary string write read parse test`` () =
-    let a = ParserLibrary.run lUndefined "U" |> ParserLibrary.sprintResult
-    Assert.Equal(a, "U")
