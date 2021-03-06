@@ -5,6 +5,9 @@ open System
 let help() =
     printfn "Long help message"
 
+//Stack overflow if to many menu stack-frames is added to the stack
+//Needs to be tail recursive using either 
+//tail recursion or continuation
 let rec menu (str:Option<string>) : Option<string> =
     if str.IsNone 
     then None
