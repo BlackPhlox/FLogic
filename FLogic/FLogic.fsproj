@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="FLogicParser.fs" />
+    <None Include="ParserLibrary.fs" />
     <Compile Include="Library.fs" />
   </ItemGroup>
+
+  <ItemGroup />
 </Project>
