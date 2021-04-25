@@ -88,7 +88,7 @@ let ``Simple map calculation test fails`` () =
 
 [<Fact>]
 let ``Simple map output calculation test`` () =
-    Assert.Equal((FL_Base.T "Hello", Map.ofList [("H","Test");("A","Hello")]), 
+    Assert.Equal((FL_Base.T "Hello", Map.ofList [("H","Test");("A","Hello")], Map.ofList[("A", FL_Base.T "Hello")]), 
         (
             Say.calcmm (
                 FL_Base.G(
@@ -99,5 +99,37 @@ let ``Simple map output calculation test`` () =
                 )
             )
         (Map.ofList [("H","Test")])
+        )
+    )
+
+[<Fact>]
+let ``Simple map output internal calculation test`` () =
+    Assert.Equal((FL_Base.T "Test", Map.ofList [("H","Test");("A","Test")], Map.ofList[("A", FL_Base.T "Test")]), 
+        (
+            Say.calcmm (
+                FL_Base.G(
+                    FL_Base.AND(
+                        FL_Base.T "Test", 
+                        FL_Base.O ("A", FL_Base.V "H")
+                    )
+                )
+            )
+        (Map.ofList [("H","Test")])
+        )
+    )
+
+[<Fact>]
+let ``Save in map using output even though calculation returned false test`` () =
+    Assert.Equal((FL_Base.F, Map.empty, Map.ofList[("A", FL_Base.T "NotTest")]), 
+        (
+            Say.calcmm (
+                FL_Base.G(
+                    FL_Base.AND(
+                        FL_Base.T "Test", 
+                        FL_Base.O ("A", FL_Base.T "NotTest")
+                    )
+                )
+            )
+        (Map.empty)
         )
     )
