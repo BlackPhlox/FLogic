@@ -85,3 +85,19 @@ let ``Simple map calculation test fails`` () =
         (Map.ofList [("H","Test")])
         )
     )
+
+[<Fact>]
+let ``Simple map output calculation test`` () =
+    Assert.Equal((FL_Base.T "Hello", Map.ofList [("H","Test");("A","Hello")]), 
+        (
+            Say.calcmm (
+                FL_Base.G(
+                    FL_Base.AND(
+                        FL_Base.T "Hello", 
+                        FL_Base.O ("A", FL_Base.T "Hello")
+                    )
+                )
+            )
+        (Map.ofList [("H","Test")])
+        )
+    )
