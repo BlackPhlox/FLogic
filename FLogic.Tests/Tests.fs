@@ -2,7 +2,7 @@ module Tests
 
 open System
 open Xunit
-open FLogic
+open FLogicS
 
 [<Fact>]
 let ``My test`` () =

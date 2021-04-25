@@ -26,7 +26,7 @@ panel.Controls.Add(button)
 let cmd_button = new Button()
 cmd_button.Text <- "Click to call"
 cmd_button.AutoSize <- true
-cmd_button.Click.Add(fun _ -> cmd_button.Text <- Say.hello "Hi") 
+cmd_button.Click.Add(fun _ -> cmd_button.Text <- hello "Hi") 
 panel.Controls.Add(cmd_button)
 
 //form.Paint.Add(paint) //<- here, if uncommented, it will draw a line when the script is run

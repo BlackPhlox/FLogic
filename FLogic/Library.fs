@@ -1,4 +1,4 @@
-﻿namespace FLogic
+﻿namespace FLogicS
 
 open System
 
