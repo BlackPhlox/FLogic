@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework> 
 
@@ -7,5 +7,10 @@
 
   <ItemGroup>
     <Compile Include="Library.fs" />
+    <Compile Include="TextInput.fs" />
+    <Compile Include="ParserLibrary.fs" />
+    <Compile Include="FLogicParser.fs" />
   </ItemGroup>
+
+  <ItemGroup />
 </Project>

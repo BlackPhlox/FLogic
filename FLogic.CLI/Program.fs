@@ -5,7 +5,7 @@ open System
 let help() =
     printfn "Long help message"
 
-//Stack overflow if to many menu stack-frames is added to the stack
+//Warning: Stack overflow if to many menu stack-frames is added to the stack
 //Needs to be tail recursive using either 
 //tail recursion or continuation
 let rec menu (str:Option<string>) : Option<string> =
@@ -25,7 +25,7 @@ let rec menu (str:Option<string>) : Option<string> =
             | x when x = "exit" -> 
                 None
             | _ -> 
-                printf "Invalid command"
+                printfn "Invalid command: %A" rs
                 None
         if action.IsSome 
         then menu str
@@ -37,6 +37,30 @@ let rec any str1 str2 = function
         then true
         else any str1 str2 xs
     | _ -> false
+
+let handle_CLI e_arg lst_args =
+    if e_arg "-tt" "--truthtable" then printfn "With truthtable"
+    if e_arg "-t" "--tree" then printfn "With tree"
+
+    let gateEval = e_arg "-ge" "--gateeval"
+    let typeSimp = e_arg "-ts" "--typesimp"
+
+    if gateEval && typeSimp then
+        printfn "Invalid request, you can't both do gate evaluation and type simplification"
+    elif gateEval then 
+        printfn "Gate evaluation"
+        if not (e_arg "-in" "--input") 
+        then printfn "No input provided"
+        else printfn "Reading input"
+
+    elif typeSimp then
+        printfn "Type simplification"
+        if not (e_arg "-g" "--gates") 
+        then printfn "No gates provided, using most highest complex gates"
+        else printfn "Only using gates: [AND,NAND]"
+    else 
+        printfn "Unknown command(s) : %A, exiting" lst_args
+    
 
 [<EntryPoint>]
 let main argv =
@@ -51,7 +75,7 @@ let main argv =
     //No args provided or contains overwrite keyword interactive
     if argv.Length = 0 || (any "-i" "--interactive" lst_args) then
         //Interactive handler
-        printfn "Welcome to FLogic.Interactive!"
+        printfn "Welcome to FLogic.Interactive!\nWrite 'help' to get more information."
         let res = menu (Some "Menu")
         if res.IsNone then exit(0)
     elif (e_arg "-h" "--help") then
@@ -60,27 +84,7 @@ let main argv =
     else 
         //CLI Handler
         printfn "Welcome to FLogic.CLI!"
-        if e_arg "-tt" "--truthtable" then printfn "With truthtable"
-        if e_arg "-t" "--tree" then printfn "With tree"
-
-        let gateEval = e_arg "-ge" "--gateeval"
-        let typeSimp = e_arg "-ts" "--typesimp"
-
-        if gateEval && typeSimp then
-            printfn "Invalid request, you can't both do gate evaluation and type simplification"
-        elif gateEval then 
-            printfn "Gate evaluation"
-            if not (e_arg "-in" "--input") 
-            then printfn "No input provided"
-            else printfn "Reading input"
-
-        elif typeSimp then
-            printfn "Type simplification"
-            if not (e_arg "-g" "--gates") 
-            then printfn "No gates provided, using most highest complex gates"
-            else printfn "Only using gates: [AND,NAND]"
-        else 
-            printfn "Unknown command, exiting"
+        handle_CLI e_arg lst_args
             
     printfn ""
     printfn "Press any key to exit"
